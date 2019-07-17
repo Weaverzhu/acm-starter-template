@@ -4,7 +4,7 @@ compile() {
     b=`stat -c %Y $2`
     if [ $a -gt $b ]; then
         echo compiling...
-        g++ $1 -o $2 -std=c++11 -static-libgcc
+        g++ $1 -o $2 -std=c++11 -O2
     fi
 }
 
@@ -45,6 +45,8 @@ elif [ $1 = "judge" ]; then
     else
         echo Verdict: WA
     fi
+elif [ $1 = "newf" ]; then
+    run "./bin/starter" "./judger/starter.txt" "./main.cpp"
 else
     echo log: wrong input
 fi
