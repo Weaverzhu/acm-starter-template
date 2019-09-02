@@ -4,7 +4,14 @@ compile() {
     b=`stat -c %Y $2`
     if [ $a -gt $b ]; then
         echo compiling...
-        g++ $1 -o $2 -std=c++11 -O2
+        g++ $1 -o $2 -std=c++11 -O2 -m64
+        suc=$?
+        if [ $suc -eq 0 ]; then
+            echo compile completed
+        else
+            echo Verdict: CE
+            exit 0
+        fi
     fi
 }
 
@@ -37,6 +44,7 @@ elif [ $1 = "gen" ]; then
     run "./bin/gen" "./input/in.txt" "./input/in.txt"
 elif [ $1 = "judge" ]; then
     compile "./judger/generator.cpp" "./bin/gen"
+    
     while true; do
         run "./bin/gen" "./input/in.txt" "./input/in.txt"
         compile "./main.cpp" "./bin/main"
@@ -64,6 +72,8 @@ elif [ $1 = "test" ]; then
     else
         echo Verdict: WA
     fi
+elif [ $1 = "python" ]; then
+    python3 "./main.py" < "./input/in.txt"
 else
     echo log: wrong input
 fi
