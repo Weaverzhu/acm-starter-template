@@ -20,9 +20,13 @@ run() {
     if [ $# -gt 2 ]; then
         echo log: to files
         time $1 < $2 > $3
-    else
+    elif [ $# -gt 1 ]; then
         echo ===========OUTPUT===========
         time $1 < $2
+        echo ============END=============
+    else
+        echo ===========OUTPUT===========
+        time $1
         echo ============END=============
     fi
 }
@@ -42,6 +46,9 @@ elif [ $1 = "gen" ]; then
     echo log: generating data input
     compile "./judger/generator.cpp" "./bin/gen"
     run "./bin/gen" "./input/in.txt" "./input/in.txt"
+elif [ $1 = "stdin" ]; then
+    compile "./main.cpp" "./bin/main"
+    run "./bin/main"
 elif [ $1 = "judge" ]; then
     compile "./judger/generator.cpp" "./bin/gen"
     

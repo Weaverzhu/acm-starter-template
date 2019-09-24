@@ -1,55 +1,109 @@
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
- 
-#include <algorithm>
-#include <iostream>
-#include <vector>
- 
-using namespace __gnu_pbds;
+
+#include <bits/stdc++.h>
+#define ll long long
 using namespace std;
- 
-template <typename T>
-using oset =
-    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
- 
-const int maxn = 200005;
- 
-int n, x[maxn], y[maxn], idx[maxn];
- 
-int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
- 
-  cin >> n;
-  for (int i = 0; i < n; ++i) {
-    cin >> x[i] >> y[i];
-    idx[i] = i;
-  }
-  sort(idx, idx + n, [&](int i, int j) {
-    if (y[i] != y[j])
-      return y[i] < y[j];
-    return x[i] < x[j];
-  });
-  oset<int> s;
-  uint64_t ans = 0;
-  for (int i = n - 1; i >= 0;) {
-    int z = y[idx[i]];
-    int i1 = i;
-    while (i1 >= 0 && y[idx[i1]] == z) {
-      s.insert(x[idx[i1]]);
-      i1 -= 1;
+const int N = 100+5;
+char mp[N][N];
+bool vis[4][N][N];
+int X1,Y1,X2,Y2,x,y,n,m,t,to[4][2] = {0,1,0,-1,1,0,-1,0},cnt = 1;
+struct node{
+    int x,y;
+    int step;
+    int Find;
+};
+void update(node &a){
+    if(a.x == X1 && a.Find != 1){   //等于1不改变状态
+        int s = min(a.y,Y1) + 1;
+        int e = max(a.y,Y1) - 1;
+        int flag = 1;
+        for(int i = s;i <= e;i++){
+            if(mp[X1][i] != '.'){
+                flag = 0;
+                break;
+            }
+        }
+        if(flag) a.Find = (a.Find == 0? 1 : 3);
     }
-    for (int j = i1 + 1; j <= i; ++j) {
-      uint64_t zl = s.order_of_key(x[idx[j]]);
-      uint64_t zr = 0;
-      if (j == i) {
-        zr = s.size();
-      } else {
-        zr = s.order_of_key(x[idx[j + 1]]);
-      }
-      ans += (zl + 1) * (zr - zl);
+    if(a.x == X2 && a.Find != 2){
+        int s = min(a.y,Y2) + 1;
+        int e = max(a.y,Y2) - 1;
+        int flag = 1;
+        for(int i = s;i <= e;i++){
+            if(mp[X2][i] != '.'){
+                flag = 0;
+                break;
+            }
+        }
+        if(flag) a.Find = (a.Find == 0? 2 : 3);
     }
-    i = i1;
-  }
-  cout << ans << '\n';
+    if(a.y == Y1 && a.Find != 1){
+        int s = min(a.x,X1) + 1;
+        int e = max(a.x,X1) - 1;
+        int flag = 1;
+        for(int i = s;i <= e;i++){
+            if(mp[i][Y1] != '.'){
+                flag = 0;
+                break;
+            }
+        }
+        if(flag) a.Find = (a.Find == 0? 1 : 3);
+    }
+    if(a.y == Y2 && a.Find != 2){
+        int s = min(a.x,X2) + 1;
+        int e = max(a.x,X2) - 1;
+        int flag = 1;
+        for(int i = s;i <= e;i++){
+            if(mp[i][Y2] != '.'){
+                flag = 0;
+                break;
+            }
+        }
+        if(flag) a.Find = (a.Find == 0? 2 : 3);
+    }
+}
+void BFS(){
+    queue<node> q;
+    while(!q.empty()) q.pop();
+    node a,b;
+    a.x = x,a.y = y,a.Find = 0,a.step = 0;
+    update(a);
+    q.push(a);
+    while(!q.empty()){
+        a = q.front();q.pop();
+        if(a.Find == 3 && a.step <= t){
+            printf("Case %d:\n%d\n",cnt++,a.step);
+            return;
+        }
+        for(int i = 0;i < 4;i++){
+            b.x = a.x + to[i][0];
+            b.y = a.y + to[i][1];
+            if(b.x < 1 || b.y < 1 || b.x > n || b.y > m) continue;
+            if(mp[b.x][b.y] != '.') continue;
+            b.Find = a.Find;
+            update(b);
+            if(vis[b.Find][b.x][b.y]) continue;
+            vis[b.Find][b.x][b.y] = true;
+            b.step = a.step + 1;
+            q.push(b);
+        }
+    }
+    printf("Case %d:\n-1\n",cnt++);
+}
+int main(){
+    int T;
+    scanf("%d",&T);
+    while(T--){
+        scanf("%d%d%d",&n,&m,&t);
+        for(int i = 1;i <= n;i++){
+            scanf("%s",mp[i] + 1);
+            for(int j = 1;j <= m;j++){
+                if(mp[i][j] == 'D') X1 = i,Y1 = j;
+                else if(mp[i][j] == 'E') X2 = i,Y2 = j;
+                else if(mp[i][j] == 'S') x = i,y = j,mp[i][j] = '.';
+            }
+        }
+        memset(vis,0,sizeof(vis));
+        BFS();
+    }
+    return 0;
 }

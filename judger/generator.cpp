@@ -1,22 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
+const int N = 1e5+5;
 int MAXN = 10000;
 int randint(int l, int r) {
     return rand()%(r-l+1) + l;
 }
+int a[N];
 int main() {
-    srand(time(0));
-    int n = 10, m = n;
-    printf("%d %d\n", n, m);
-    for (int i=0; i<n; ++i) {
-        int l = randint(1, 20), r = randint(1, 20);
-        if (l > r) swap(l, r);
-        printf("%d %d\n", l, r);
-    }
-    for (int i=0; i<n; ++i) {
-        int l = randint(1, 20), r = randint(1, 20);
-        if (l > r) swap(l, r);
-        printf("%d %d\n", l, r);
+    int n = 100000, q = 100000;
+    printf("%d %d\n", n, q);
+    for (int i=1; i<=n; ++i)
+        a[i] = i;
+    random_shuffle(a+1, a+n+1);
+    for (int i=1; i<=n; ++i) printf("%d ", a[i]);
+    for (int i=1; i<=q; ++i) {
+        printf("%d %d\n", randint(1, n), randint(1, n));
     }
     return 0;
 }

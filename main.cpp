@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 using LL = long long;
+
+#define zerol
+
 #define FOR(i, x, y) for (decay<decltype(y)>::type i = (x), _##i = (y); i < _##i; ++i)
 #define FORD(i, x, y) for (decay<decltype(x)>::type i = (x), _##i = (y); i > _##i; --i)
 #ifdef zerol
@@ -14,78 +17,109 @@ void err(T a, A... x) { cout << a << ' '; err(x...); }
 #define dbg(...)
 #endif
 
+struct ios {
+    inline char read(){
+        static const int IN_LEN=1<<18|1;
+        static char buf[IN_LEN],*s,*t;
+        return (s==t)&&(t=(s=buf)+fread(buf,1,IN_LEN,stdin)),s==t?-1:*s++;
+    }
+
+    template <typename _Tp> inline ios & operator >> (_Tp&x){
+        static char c11,boo;
+        for(c11=read(),boo=0;!isdigit(c11);c11=read()){
+            if(c11==-1)return *this;
+            boo|=c11=='-';
+        }
+        for(x=0;isdigit(c11);c11=read())x=x*10+(c11^'0');
+        boo&&(x=-x);
+        return *this;
+    }
+
+    int read(char *s) {
+        int len = 0;
+        char ch;
+        for (ch=read(); ch=='\n' || ch == ' '; ch=read());
+        if (ch == -1) {
+            s[len] = 0;
+            return -1;
+        }
+        for (; ch!='\n' && ch != ' ' && ch != -1;ch=read())
+            s[len++] = ch;
+        s[len] = 0;
+        return len;
+    }
+} io;
+
 
 //--------------------------------------------------------------------------------------------
 
-typedef __int128 LLL;
+const int N = 1e5+5;
 
-LL n;
-
-namespace lgcd {
-    LLL f(LLL a, LLL b, LLL c, LLL n) {
-        LLL res = 0;
-        if (n <= 5) {
-            for (int i=0; i<=n; ++i) {
-                res += (a*i+b)/c;
-            }
-        } else if (a >= c || b >= c) {
-            res = (a/c) * (n*(n+1)/2) + (b/c)*(n+1) + f(a%c, b%c, c, n);
-        } else {
-            LLL m = (a*n+b)/c;
-            res = n * m - f(c, c-b-1, a, m-1);
+struct point {
+    LL x, y;
+    int id;
+    point (LL x=0, LL y=0, int id=0):x(x), y(y), id(id){}
+    point operator - (const point &other) const {
+        return point(x-other.x, y-other.y);
+    }
+    LL operator * (const point &other) const {
+        return x * other.y - y * other.x;
+    }
+    point K(const point &other) {
+        point res = *this-other;
+        if (res.x < 0) {
+            res.x = -res.x;
+            res.y = -res.y;
         }
         return res;
     }
-}
 
-LLL g(LLL n, LLL p, LLL q) {
-    LLL a = p, b = 0, c = q;
-    return lgcd::f(a, b, c, n);
-}
-
-LLL cnt(LLL n, LLL p1, LLL q1, LLL p2, LLL q2) {
-    return g(n, p1, q1) - g(n, p2, q2);
-}
-
-
-void solve() {
-    char input[100];
-    scanf("%s", input);
-    sscanf(input, "0.%lld", &n);
-    LLL p1 = n, p2 = n, q1 = 1, q2 = q1, p = n * 10;
-    for (int i=0; i<19; ++i) {
-        q1 *= 10;
-        q2 *= 10;
+    bool operator <= (const LL k) const {
+        return y <= k * x;
     }
-    p1 = p1 * 10 + 5;
-    p2 = p2 * 10 - 5;
+} sta[N];
 
-    LLL l = 0, r = 1e9+5;
-    while (l < r-1) {
-        LLL m = (l+r) >> 1;
-        // print(m);
-        if (cnt(m, p1, q1, p2, q2) < 1)
-            l = m;
-        else 
-            r = m;
-    }
-    LLL x = p * r / q1, y = r, g = __gcd(x, y);
-    x /= g;
-    y /= g;
-    LL xx = x, yy = y, gg = __gcd(xx, yy);
-    xx /= gg;
-    yy /= gg;
-    // printf("%lld %lld\n", xx, yy);
-    cout << xx << ' ' << yy << endl;
-}
+int top;
 
-
+int c[N], n;
+LL s[N], L, p[N], dp[N];
 int main(int argc, char const *argv[])
 {
-    int t;
-    scanf("%d", &t); getchar();
-    for (int kk=0; kk<t; ++kk)
-        solve();
+    io >> n >> L;
+    for (int i=1; i<=n; ++i)
+    {
+        io >> c[i];
+        s[i] = s[i-1] + c[i];
+        p[i] = s[i]+i;
+    }
+    ++L;
+    for (int i=1; i<=n; ++i) {
+        point now(p[i-1], dp[i-1] + p[i-1]*p[i-1], i);
+        while (top >= 2 && (sta[top-1] - sta[top-2]) * (now - sta[top-2]) < 0) --top;
+        sta[top++] = now;
+        int l = 1, r = top-1;
+        LL k = 2LL*(L - p[i]);
+        int tar;
+        if (top == 1 || (r >= 1 && sta[r].K(sta[r-1]) <= k)) {
+            tar = r;
+        } else {
+            while (l < r-1) {
+                int m = (l+r) >> 1;
+                if (sta[m].K(sta[m-1]) <= k)
+                    l = m;
+                else r = m;
+            }
+            tar = l;
+        }
+        tar = sta[tar].id;
+        dp[i] = dp[tar-1] + (p[i]-p[tar-1]-L)*(p[i]-p[tar-1]-L);
+    }
+
+    for (int i=1; i<=n; ++i) {
+        dbg(i, dp[i], p[i], c[i], s[i]);
+    }
+
+    printf("%lld\n", dp[n]);
     return 0;
 }
 
