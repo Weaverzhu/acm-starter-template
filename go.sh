@@ -1,10 +1,24 @@
 #!/bin/sh
 compile() {
-    a=`stat -c %Y $1`
-    b=`stat -c %Y $2`
-    if [ $a -gt $b ]; then
+    # Usage: compile <source file> <obj pathname>
+    if [ -f $2 ]; then
+        a=`stat -c %Y $1`
+        b=`stat -c %Y $2`
+
+        if [ $a -gt $b ]; then
+            echo compiling...
+            gcc $1 -o $2
+            suc=$?
+            if [ $suc -eq 0 ]; then
+                echo compile completed
+            else
+                echo Verdict: CE
+                exit 0
+            fi
+        fi
+    else
         echo compiling...
-        g++ $1 -o $2 -std=c++11 -O2 -m64
+        gcc $1 -o $2
         suc=$?
         if [ $suc -eq 0 ]; then
             echo compile completed
@@ -14,7 +28,6 @@ compile() {
         fi
     fi
 }
-
 run() {
     echo running $1
     if [ $# -gt 2 ]; then
