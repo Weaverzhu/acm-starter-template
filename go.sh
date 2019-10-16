@@ -59,7 +59,7 @@ elif [ $1 = "gen" ]; then
     echo log: generating data input
     compile "./judger/generator.cpp" "./bin/gen"
     run "./bin/gen" "./input/in.txt" "./input/in.txt"
-elif [ $1 = "bin"]; then
+elif [ $1 = "bin" ]; then
     g++ main.cpp -o bin/main -std=c++11 -Wall
 elif [ $1 = "stdin" ]; then
     compile "./main.cpp" "./bin/main"
