@@ -7,7 +7,7 @@ compile() {
 
         if [ $a -gt $b ]; then
             echo compiling...
-            gcc $1 -o $2
+            g++ $1 -o $2 -std=c++11 -Wall
             suc=$?
             if [ $suc -eq 0 ]; then
                 echo compile completed
