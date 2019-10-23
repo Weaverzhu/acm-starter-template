@@ -7,7 +7,7 @@ compile() {
 
         if [ $a -gt $b ]; then
             echo compiling...
-            g++ $1 -o $2 -std=c++11 -Wall
+            g++ $1 -o $2 -std=c++11 -Wall -fsanitize=address
             suc=$?
             if [ $suc -eq 0 ]; then
                 echo compile completed
@@ -18,7 +18,7 @@ compile() {
         fi
     else
         echo compiling...
-        g++ $1 -o $2 -std=c++11 -Wall
+        g++ $1 -o $2 -std=c++11 -Wall -fsanitize=address
         suc=$?
         if [ $suc -eq 0 ]; then
             echo compile completed
