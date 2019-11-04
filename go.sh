@@ -40,7 +40,7 @@ if [ $# -eq 1 ]; then
         done
     elif [ $1 = "newf" ]; then
         echo log: reset main.cpp
-        cat ./judger/starter.txt > ./main.txt
+        cat ./judger/starter.txt > ./main.cpp
     elif [ $1 = "test" ]; then
         echo 'log: run a single test case'
         make
