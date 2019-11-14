@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bash
 set -o errexit
 echo ============================
 echo .
@@ -11,7 +11,7 @@ if [ $# -eq 1 ]; then
     if [ $1 = "gen" ]; then
         echo log: generating input data
         make gen
-        ./bin/gen > ./input/in.txt
+        ./gen > ./input/in.txt
     elif [ $1 = "compile" ]; then
         echo log: just compile main.cpp
         make
@@ -19,7 +19,7 @@ if [ $# -eq 1 ]; then
         echo log: run from stdin
         make
         echo ------------- output --------------------
-        ./bin/main
+        ./main
     elif [ $1 = "judge" ]; then
         echo 'log: judge with huge test cases'
         make
@@ -28,9 +28,9 @@ if [ $# -eq 1 ]; then
         echo 'compile completed...'
 
         while true; do
-            ./bin/gen > ./input/in.txt
-            ./bin/main < ./input/in.txt > ./output/out.txt
-            ./bin/std < ./input/in.txt > ./output/std.txt
+            ./gen > ./input/in.txt
+            ./main < ./input/in.txt > ./output/out.txt
+            ./std < ./input/in.txt > ./output/std.txt
             if diff "./output/out" "./output/std"; then
                 echo Verdict: AC
             else
@@ -48,9 +48,9 @@ if [ $# -eq 1 ]; then
         make gen
         echo 'compile completed...'
 
-        ./bin/gen > ./input/in.txt
-        time ./bin/main < ./input/in.txt > ./output/out.txt
-        time ./bin/std < ./input/in.txt > ./output/std.txt
+        ./gen > ./input/in.txt
+        time ./main < ./input/in.txt > ./output/out.txt
+        time ./std < ./input/in.txt > ./output/std.txt
         if diff "./output/out" "./output/std"; then
             echo Verdict: AC
         else
@@ -64,7 +64,7 @@ if [ $# -eq 1 ]; then
 elif [ $# -eq 0 ]; then
     make
     echo ------------- output --------------------
-    time ./bin/main < ./input/in.txt
+    time ./main < ./input/in.txt
 else
     echo 'Usage: bash go.sh <command>'
 fi
