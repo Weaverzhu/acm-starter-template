@@ -19,7 +19,7 @@ if [ $# -eq 1 ]; then
         echo log: run from stdin
         make main
         echo ------------- output --------------------
-        main
+        ./main
     elif [ $1 = "judge" ]; then
         echo 'log: judge with huge test cases'
         make main
@@ -49,8 +49,8 @@ if [ $# -eq 1 ]; then
         echo 'compile completed...'
 
         gen > ./input/in.txt
-        time main < ./input/in.txt > ./output/out.txt
-        time std < ./input/in.txt > ./output/std.txt
+        time ./main < ./input/in.txt > ./output/out.txt
+        time ./std < ./input/in.txt > ./output/std.txt
         if diff "./output/out" "./output/std"; then
             echo Verdict: AC
         else
@@ -64,7 +64,7 @@ if [ $# -eq 1 ]; then
 elif [ $# -eq 0 ]; then
     make main
     echo ------------- output --------------------
-    time main < ./input/in.txt
+    time ./main < ./input/in.txt
 else
     echo 'Usage: bash go.sh <command>'
 fi
