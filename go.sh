@@ -11,7 +11,7 @@ if [ $# -eq 1 ]; then
     if [ $1 = "gen" ]; then
         echo log: generating input data
         make gen
-        gen > ./input/in.txt
+        ./gen > ./input/in.txt
     elif [ $1 = "compile" ]; then
         echo log: just compile main.cpp
         make main
@@ -28,9 +28,9 @@ if [ $# -eq 1 ]; then
         echo 'compile completed...'
 
         while true; do
-            gen > ./input/in.txt
-            main < ./input/in.txt > ./output/out.txt
-            std < ./input/in.txt > ./output/std.txt
+            ./gen > ./input/in.txt
+            ./main < ./input/in.txt > ./output/out.txt
+            ./std < ./input/in.txt > ./output/std.txt
             if diff "./output/out" "./output/std"; then
                 echo Verdict: AC
             else
@@ -48,7 +48,7 @@ if [ $# -eq 1 ]; then
         make gen
         echo 'compile completed...'
 
-        gen > ./input/in.txt
+        ./gen > ./input/in.txt
         time ./main < ./input/in.txt > ./output/out.txt
         time ./std < ./input/in.txt > ./output/std.txt
         if diff "./output/out" "./output/std"; then
