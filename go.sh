@@ -31,7 +31,7 @@ if [ $# -eq 1 ]; then
             ./gen > ./input/in.txt
             ./main < ./input/in.txt > ./output/out.txt
             ./std < ./input/in.txt > ./output/std.txt
-            if diff "./output/out" "./output/std"; then
+            if diff "./output/out.txt" "./output/std.txt"; then
                 echo Verdict: AC
             else
                 echo Verdict: WA
@@ -48,10 +48,9 @@ if [ $# -eq 1 ]; then
         make gen
         echo 'compile completed...'
 
-        ./gen > ./input/in.txt
         time ./main < ./input/in.txt > ./output/out.txt
         time ./std < ./input/in.txt > ./output/std.txt
-        if diff "./output/out" "./output/std"; then
+        if diff "./output/out.txt" "./output/std.txt"; then
             echo Verdict: AC
         else
             echo Verdict: WA
